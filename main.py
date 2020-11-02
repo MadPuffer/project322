@@ -2,6 +2,7 @@ import sys
 import sqlite3
 
 from PyQt5.QtWidgets import QTableWidgetItem, QMainWindow, QApplication, QPushButton
+from PyQt5.QtGui import QColor
 from PyQt5 import uic
 from PyQt5 import Qt
 
@@ -24,19 +25,44 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         self.fourth_fl_btn.clicked.connect(self.open_fl_table)
         self.fifth_fl_btn.clicked.connect(self.open_fl_table)
 
+        self.setStyleSheet('''
+            QPushButton {
+                background-color: #217346;
+                color: #ffffff;
+                font: 100 10pt "Microsoft YaHei UI";
+                border-style: solid;
+            }
+            QTableWidget {
+                selection-background-color: #53886b;
+                selection-border: 2px solid green;border-style: double;
+            }
+            QTableWidget::item::focus {
+                border: 2px solid green;border-style: solid;
+            }
+            QTableWidget::item::selected {
+                border: 2px solid green;border-style: solid;
+            }
+
+
+            
+        ''')
+
     def add_row(self):
         rowCount = self.residents_main_table.rowCount()
         self.residents_main_table.setRowCount(rowCount + 1)
         self.delete_btn = QPushButton("Удалить", self)
         self.delete_btn.clicked.connect(self.delete_row)
-        self.btnToRow[self.delete_btn] = rowCount
-        self.residents_main_table.setCellWidget(self.residents_main_table.rowCount() - 1, 10, self.delete_btn)
+        self.residents_main_table.setCellWidget(self.residents_main_table.rowCount() - 1, 11, self.delete_btn)
 
         ids = []
-        for row in range(rowCount):
-            ids.append(int(self.residents_main_table.item(row, 1).text()))
-        max_id = max(ids) + 1
+        try:
+            for row in range(rowCount):
+                ids.append(int(self.residents_main_table.item(row, 1).text()))
+            max_id = max(ids) + 1
+        except:
+            max_id = 1
         self.residents_main_table.setItem(self.residents_main_table.rowCount() - 1, 1, QTableWidgetItem(str(max_id)))
+        self.btnToRow[self.delete_btn] = self.residents_main_table.item(rowCount, 1)
 
     def save_table(self,):
         connection = sqlite3.connect('DataBase.sqlite')
@@ -54,7 +80,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
                 id = -1
             name = writes[2].text()
             clas = int(writes[3].text())
-            bc = writes[4].text()
+            bc = writes[4].text().upper()
             address = writes[5].text()
             dob = writes[6].text()
             st_num = writes[7].text()
@@ -63,6 +89,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
                 status = writes[9].text()
             except:
                 status = "-"
+            gender = writes[10].text()
 
             request = f'SELECT * FROM "residents main table" WHERE room LIKE "{self.floor}%"'
             residents_main_table_items = c.execute(request).fetchall()
@@ -80,10 +107,10 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
 
                 if id in i:
                     isIn = True
-                    request = f"UPDATE 'residents main table' SET room = {room}, name = '{name}', class = {clas}, 'b/c' = '{bc}', address = '{address}', date_of_birth = '{dob}', st_num = '{st_num}', par_num = '{par_num}', status = '{status}' WHERE id = {id}"
+                    request = f"UPDATE 'residents main table' SET room = {room}, name = '{name}', class = {clas}, 'b/c' = '{bc}', address = '{address}', date_of_birth = '{dob}', st_num = '{st_num}', par_num = '{par_num}', status = '{status}', gender = '{gender}' WHERE id = {id}"
 
             if not isIn:
-                request = f"INSERT INTO 'residents main table' (room, id, name, class, 'b/c', address, date_of_birth, st_num, par_num, status) VALUES ({room}, {id}, '{name}', {clas}, '{bc}', '{address}', '{dob}', '{st_num}', '{par_num}', '{status}')"
+                request = f"INSERT INTO 'residents main table' (room, id, name, class, 'b/c', address, date_of_birth, st_num, par_num, status, gender) VALUES ({room}, {id}, '{name}', {clas}, '{bc}', '{address}', '{dob}', '{st_num}', '{par_num}', '{status}, '{gender})"
             try:
                 c.execute(request)
                 connection.commit()
@@ -91,7 +118,8 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
                 print("error")
 
     def delete_row(self):
-        self.residents_main_table.removeRow(self.btnToRow[self.sender()])
+        row = self.residents_main_table.indexFromItem(self.btnToRow[self.sender()]).row()
+        self.residents_main_table.removeRow(row)
         request = f"DELETE FROM 'residents main table' WHERE id = 5"
 
     def open_fl_table(self):
@@ -108,7 +136,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
                                                   QTableWidgetItem(str(residents_main_table_items[row][column])))
             self.delete_btn = QPushButton("Удалить", self)
             self.delete_btn.clicked.connect(self.delete_row)
-            self.btnToRow[self.delete_btn] = row
+            self.btnToRow[self.delete_btn] = self.residents_main_table.item(row, 1)
             self.residents_main_table.setCellWidget(row, len(residents_main_table_items[row]), self.delete_btn)
 
         c.close()
@@ -117,10 +145,10 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
 
 def main():
     app = QApplication(sys.argv)  # Новый экземпляр QApplication
-    window = ExampleApp()  # Создаём объект класса ExampleApp
-    window.show()  # Показываем окно
-    app.exec_()  # и запускаем приложение
+    window = ExampleApp()
+    window.show()
+    app.exec_()
 
 
-if __name__ == '__main__':  # Если мы запускаем файл напрямую, а не импортируем
-    main()  # то запускаем функцию main()
+if __name__ == '__main__':
+    main()
