@@ -1,7 +1,9 @@
+import os
 import sys
 import sqlite3
 
-from PyQt5.QtWidgets import QTableWidgetItem, QMainWindow, QApplication, QPushButton
+from PyQt5.QtCore import QDir
+from PyQt5.QtWidgets import QTableWidgetItem, QMainWindow, QApplication, QPushButton, QFileDialog
 from PyQt5.QtGui import QColor
 from PyQt5 import uic
 from PyQt5 import Qt
@@ -16,9 +18,12 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         super().__init__()
         uic.loadUi('interface.ui', self)
         self.btnToRow = {}
+        self.residents_main_table.setVisible(False)
+        self.data_base = "DataBase.sqlite"
 
         self.addBtn.clicked.connect(self.add_row)
         self.saveBtn.clicked.connect(self.save_table)
+        self.openFileBtn.clicked.connect(self.open_file)
 
         self.second_fl_btn.clicked.connect(self.open_fl_table)
         self.third_fl_btn.clicked.connect(self.open_fl_table)
@@ -33,19 +38,16 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
                 border-style: solid;
             }
             QTableWidget {
-                selection-background-color: #53886b;
+                selection-background-color: #4fa877;
                 selection-border: 2px solid green;border-style: double;
             }
-            QTableWidget::item::focus {
-                border: 2px solid green;border-style: solid;
-            }
-            QTableWidget::item::selected {
-                border: 2px solid green;border-style: solid;
-            }
-
-
-            
+               
         ''')
+
+    def open_file(self):
+        selected_filter = "DataBase (*.sqlite)"
+        fileName = QFileDialog.getOpenFileName(self, " Выберите Базу Данных ", os.getcwd(), selected_filter)
+        print(fileName)
 
     def add_row(self):
         rowCount = self.residents_main_table.rowCount()
@@ -58,6 +60,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         try:
             for row in range(rowCount):
                 ids.append(int(self.residents_main_table.item(row, 1).text()))
+                print(ids)
             max_id = max(ids) + 1
         except:
             max_id = 1
@@ -65,7 +68,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         self.btnToRow[self.delete_btn] = self.residents_main_table.item(rowCount, 1)
 
     def save_table(self,):
-        connection = sqlite3.connect('DataBase.sqlite')
+        connection = sqlite3.connect(self.data_base)
         c = connection.cursor()
 
         for row in range(self.residents_main_table.rowCount()):
@@ -123,10 +126,9 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         request = f"DELETE FROM 'residents main table' WHERE id = 5"
 
     def open_fl_table(self):
-        self.floor = self.sender().text().split()[0]
-        connection = sqlite3.connect('DataBase.sqlite')
+        connection = sqlite3.connect(self.data_base)
         c = connection.cursor()
-        request = f'SELECT * FROM "residents main table" WHERE room LIKE "{self.floor}%"'
+        request = f'SELECT * FROM "residents main table" WHERE room LIKE "{self.sender().text().split()[0]}%"'
         residents_main_table_items = c.execute(request).fetchall()
         self.residents_main_table.setRowCount(len(residents_main_table_items))
 
@@ -141,6 +143,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
 
         c.close()
         self.residents_main_table.resizeColumnsToContents()
+        self.residents_main_table.setVisible(True)
 
 
 def main():
