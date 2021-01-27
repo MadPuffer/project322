@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>50</y>
+      <y>10</y>
       <width>1891</width>
-      <height>701</height>
+      <height>801</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -189,12 +189,23 @@ text-align: center;
     </column>
     <column>
      <property name="text">
-      <string>Действия</string>
+      <string>Удаление</string>
      </property>
      <property name="font">
       <font>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Выселение</string>
+     </property>
+     <property name="font">
+      <font>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
     </column>
@@ -234,12 +245,19 @@ text-align: center;
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>770</y>
+      <y>820</y>
       <width>1921</width>
       <height>51</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="first_fl_btn">
+       <property name="text">
+        <string>1 этаж</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="second_fl_btn">
        <property name="text">
@@ -272,52 +290,20 @@ text-align: center;
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="stat_btn">
        <property name="text">
         <string>Cтатистика</string>
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="evicted_btn">
+       <property name="text">
+        <string>Выселенные</string>
+       </property>
+      </widget>
+     </item>
     </layout>
-   </widget>
-   <widget class="QPushButton" name="saveBtn">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>10</y>
-      <width>91</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Сохранить</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="addBtn">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>10</y>
-      <width>121</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Добавить запись</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="openFileBtn">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Открыть файл</string>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -329,8 +315,72 @@ text-align: center;
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Файл</string>
+    </property>
+    <addaction name="openAction"/>
+    <addaction name="saveAction"/>
+    <addaction name="createDataBaseAction"/>
+    <addaction name="separator"/>
+    <addaction name="printAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Действия</string>
+    </property>
+    <addaction name="addRowAction"/>
+    <addaction name="backupRowAction"/>
+    <addaction name="action"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="openAction">
+   <property name="text">
+    <string>Открыть</string>
+   </property>
+  </action>
+  <action name="saveAction">
+   <property name="text">
+    <string>Сохранить</string>
+   </property>
+  </action>
+  <action name="addRowAction">
+   <property name="text">
+    <string>Добавить запись</string>
+   </property>
+  </action>
+  <action name="backupRowAction">
+   <property name="text">
+    <string>Восстановить последнюю строку</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="createDataBaseAction">
+   <property name="text">
+    <string>Создать</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>Найти...</string>
+   </property>
+  </action>
+  <action name="printAction">
+   <property name="text">
+    <string>Печать текущей таблицы</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
