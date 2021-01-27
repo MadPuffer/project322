@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QTableWidgetItem, QMainWindow, QApplication, QPushBu
 from PyQt5 import uic
 from datetime import date
 import xlwt
-import xlrd
 
 
 class MainWindow(QMainWindow):
@@ -23,6 +22,8 @@ class MainWindow(QMainWindow):
         self.floor = -1
         self.backUpRows = []
         self.is_table_saved = True
+
+        self.open_fl_table(1, False)
 
         self.second_fl_btn.clicked.connect(self.open_fl_table)
         self.first_fl_btn.clicked.connect(self.open_fl_table)
@@ -229,7 +230,6 @@ class MainWindow(QMainWindow):
         request = f"UPDATE 'residents main table' SET isEvicted = 1, date_of_eviction = '{datetime}' WHERE id = {id}"
 
         c.execute(request)
-        connection.commit()
         c.close()
 
         self.residents_main_table.removeRow(row)
