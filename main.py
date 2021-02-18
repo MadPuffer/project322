@@ -649,7 +649,7 @@ class Statistic(QWidget):
         self.statisitc_table.setItem(0, 3, QTableWidgetItem(str(count_of_male5)))
         self.statisitc_table.setItem(0, 4, QTableWidgetItem(str(count_of_male3 + count_of_male4 + count_of_male5)))
 
-        self.statisitc_table.setItem(1, 0, QTableWidgetItem(str(0)))
+        self.statisitc_table.setItem(1, 0, QTableWidgetItem(str(count_of_female2)))
         self.statisitc_table.setItem(1, 1, QTableWidgetItem("-"))
         self.statisitc_table.setItem(1, 2, QTableWidgetItem("-"))
         self.statisitc_table.setItem(1, 3, QTableWidgetItem(str(count_of_female5)))
